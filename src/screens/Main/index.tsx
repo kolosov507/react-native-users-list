@@ -1,15 +1,25 @@
 import React from 'react';
-import { View } from 'react-native';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
+
+import Search from '../../components/Search';
 
 const Main = () => {
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: 'pink',
-      }}
-    />
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Search />
+      </View>
+    </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
+  container: {
+    padding: 16,
+  },
+});
 
 export default Main;
