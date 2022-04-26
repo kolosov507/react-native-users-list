@@ -1,17 +1,24 @@
-import { Navigation } from 'react-native-navigation';
+import { Navigation as RNN } from 'react-native-navigation';
 
-import App from './App';
+import ComponentNames from './src/navigation/componentNames';
+import Main from './src/screens/Main';
 
-Navigation.registerComponent('com.myApp.WelcomeScreen', () => App);
+RNN.registerComponent(ComponentNames.Main, () => Main);
 
-Navigation.events().registerAppLaunchedListener(() => {
-  Navigation.setRoot({
+RNN.events().registerAppLaunchedListener(() => {
+  RNN.setDefaultOptions({
+    topBar: {
+      visible: false,
+    },
+  });
+
+  RNN.setRoot({
     root: {
       stack: {
         children: [
           {
             component: {
-              name: 'com.myApp.WelcomeScreen',
+              name: ComponentNames.Main,
             },
           },
         ],
