@@ -7,25 +7,28 @@ import Sorting from '../../components/Sorting';
 import List from '../../components/List';
 import Pagination from '../../components/Pagination';
 import { Dispatch, RootState } from '../../store';
-import { changePage } from './usersListSlice';
+import { changePage, setSearchQuery } from './usersListSlice';
 
 const UsersList = () => {
   const ITEMS_PER_PAGE = 15;
 
-  const users = useSelector((state: RootState) => state.usersList.users);
-  const currentPage = useSelector((state: RootState) => state.usersList.currentPage);
+  const { users, currentPage, searchQuery } = useSelector((state: RootState) => state.usersList);
 
   const dispatch = useDispatch<Dispatch>();
+
+  const searchResults = users.filter(user =>
+    user.name.toLocaleLowerCase().includes(searchQuery.toLowerCase()),
+  );
 
   const begin = currentPage * ITEMS_PER_PAGE;
   const end = (currentPage + 1) * ITEMS_PER_PAGE;
 
-  const listData = users.slice(begin, end);
+  const listData = searchResults.slice(begin, end);
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Search />
+        <Search onChangeText={text => dispatch(setSearchQuery(text))} />
         <Sorting
           label="Sorting by age"
           values={['up', 'down']}
@@ -34,7 +37,7 @@ const UsersList = () => {
         />
         <List data={listData} style={styles.list} />
         <Pagination
-          items={users}
+          items={searchResults}
           step={ITEMS_PER_PAGE}
           currentIndex={currentPage}
           onPress={index => dispatch(changePage(index))}

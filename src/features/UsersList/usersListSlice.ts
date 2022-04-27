@@ -7,14 +7,18 @@ export const usersListSlice = createSlice({
   initialState: {
     users: users,
     currentPage: 0,
+    searchQuery: '',
   },
   reducers: {
     changePage: (state, action) => {
       state.currentPage = action.payload;
     },
+    setSearchQuery: (state, action) => {
+      state.searchQuery = action.payload;
+    },
   },
 });
 
-export const { changePage } = usersListSlice.actions;
+export const { changePage, setSearchQuery } = usersListSlice.actions;
 
 export default usersListSlice.reducer;
