@@ -10,9 +10,10 @@ type Props = {
   style?: StyleProp<ViewStyle>;
 };
 
-const UsersList: React.FC<Props> = props => {
+const UsersList = React.forwardRef<FlatList, Props>((props, ref) => {
   return (
     <FlatList
+      ref={ref}
       style={props.style}
       data={props.data}
       showsVerticalScrollIndicator={false}
@@ -29,7 +30,7 @@ const UsersList: React.FC<Props> = props => {
       )}
     />
   );
-};
+});
 
 const Separator = () => <View style={styles.separator} />;
 

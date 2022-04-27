@@ -1,5 +1,5 @@
-import React, { useCallback, useLayoutEffect } from 'react';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import React, { useCallback, useLayoutEffect, useRef } from 'react';
+import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Search from '../../components/Search';
@@ -21,6 +21,7 @@ const UsersList = () => {
   const USERS_PER_PAGE = 15;
 
   const dispatch = useDispatch<Dispatch>();
+  const listRef = useRef<FlatList>(null);
   const { users, currentPage, searchQuery, sortingParameter } = useSelector(
     (state: RootState) => state.usersList,
   );
@@ -31,6 +32,14 @@ const UsersList = () => {
   );
 
   const handleRemovePress = useCallback((id: number) => dispatch(removeUser(id)), [dispatch]);
+
+  const handlePageChanging = (index: number) => {
+    dispatch(changePage(index));
+
+    if (index !== currentPage) {
+      listRef.current?.scrollToOffset({ offset: 0 });
+    }
+  };
 
   const sortByAge = (data: User[], parameter: SortingParameters | null) => {
     if (parameter === null) {
@@ -78,12 +87,17 @@ const UsersList = () => {
           onReset={() => dispatch(resetSorting())}
           style={styles.sorting}
         />
-        <List data={currentPageUsers} style={styles.list} onRemovePress={handleRemovePress} />
+        <List
+          ref={listRef}
+          data={currentPageUsers}
+          style={styles.list}
+          onRemovePress={handleRemovePress}
+        />
         <Pagination
           items={searchResults}
           step={USERS_PER_PAGE}
           currentIndex={currentPage}
-          onPress={index => dispatch(changePage(index))}
+          onPress={handlePageChanging}
         />
       </View>
     </SafeAreaView>
