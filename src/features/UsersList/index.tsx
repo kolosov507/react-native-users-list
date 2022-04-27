@@ -7,38 +7,71 @@ import Sorting from '../../components/Sorting';
 import List from '../../components/List';
 import Pagination from '../../components/Pagination';
 import { Dispatch, RootState } from '../../store';
-import { changePage, setSearchQuery } from './usersListSlice';
+import {
+  changePage,
+  resetSorting,
+  setSearchQuery,
+  setSortingParameter,
+  SortingParameters,
+  User,
+} from './usersListSlice';
 
 const UsersList = () => {
-  const ITEMS_PER_PAGE = 15;
-
-  const { users, currentPage, searchQuery } = useSelector((state: RootState) => state.usersList);
+  const USERS_PER_PAGE = 15;
 
   const dispatch = useDispatch<Dispatch>();
-
-  const searchResults = users.filter(user =>
-    user.name.toLocaleLowerCase().includes(searchQuery.toLowerCase()),
+  const { users, currentPage, searchQuery, sortingParameter } = useSelector(
+    (state: RootState) => state.usersList,
   );
 
-  const begin = currentPage * ITEMS_PER_PAGE;
-  const end = (currentPage + 1) * ITEMS_PER_PAGE;
+  const handleSearch = (value: string) => {
+    dispatch(setSearchQuery(value));
 
-  const listData = searchResults.slice(begin, end);
+    if (currentPage !== 0) {
+      dispatch(changePage(0));
+    }
+  };
+
+  const sortByAge = (data: User[], parameter: SortingParameters | null) => {
+    if (parameter === null) {
+      return data;
+    }
+
+    const sorted = [...data].sort((a, b) => a.age - b.age);
+
+    return parameter === SortingParameters.Down ? sorted.reverse() : sorted;
+  };
+
+  const searchByName = (data: User[], query: string) => {
+    return data.filter(user => user.name.toLocaleLowerCase().includes(query.toLowerCase()));
+  };
+
+  const trimForPage = (data: User[], page: number, usersPerPage: number) => {
+    const begin = page * usersPerPage;
+    const end = (page + 1) * usersPerPage;
+
+    return data.slice(begin, end);
+  };
+
+  const searchResults = searchByName(users, searchQuery);
+  const sortingResults = sortByAge(searchResults, sortingParameter);
+  const currentPageUsers = trimForPage(sortingResults, currentPage, USERS_PER_PAGE);
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Search onChangeText={text => dispatch(setSearchQuery(text))} />
+        <Search onChangeText={handleSearch} />
         <Sorting
           label="Sorting by age"
-          values={['up', 'down']}
-          onChange={value => console.log(value)}
+          values={Object.values(SortingParameters)}
+          onChange={value => dispatch(setSortingParameter(value))}
+          onReset={() => dispatch(resetSorting())}
           style={styles.sorting}
         />
-        <List data={listData} style={styles.list} />
+        <List data={currentPageUsers} style={styles.list} />
         <Pagination
           items={searchResults}
-          step={ITEMS_PER_PAGE}
+          step={USERS_PER_PAGE}
           currentIndex={currentPage}
           onPress={index => dispatch(changePage(index))}
         />
