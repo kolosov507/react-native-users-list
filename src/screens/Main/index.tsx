@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
@@ -9,7 +9,15 @@ import Pagination from '../../components/Pagination';
 import { RootState } from '../../store';
 
 const Main = () => {
+  const ITEMS_PER_PAGE = 15;
+
   const users = useSelector((state: RootState) => state.users);
+  const [pageIndex, setPageIndex] = useState(0);
+
+  const begin = pageIndex * ITEMS_PER_PAGE;
+  const end = (pageIndex + 1) * ITEMS_PER_PAGE;
+
+  const listData = users.slice(begin, end);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -21,12 +29,12 @@ const Main = () => {
           onChange={value => console.log(value)}
           style={styles.sorting}
         />
-        <List data={users} style={styles.list} />
+        <List data={listData} style={styles.list} />
         <Pagination
           items={users}
-          step={15}
-          currentIndex={1}
-          onPress={page => console.log('page', page)}
+          step={ITEMS_PER_PAGE}
+          currentIndex={pageIndex}
+          onPress={setPageIndex}
         />
       </View>
     </SafeAreaView>
