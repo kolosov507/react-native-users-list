@@ -2,9 +2,11 @@ import React from 'react';
 import { FlatList, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import Item from './Item';
+import { User } from '../../features/UsersList/usersListSlice';
 
 type Props = {
-  data: any; // TODO: fill in types
+  data: User[];
+  onRemovePress: (user: User) => void;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -21,6 +23,7 @@ const List: React.FC<Props> = props => {
           age={item.age}
           avatar={item.avatar}
           name={item.name}
+          onRemovePress={() => props.onRemovePress(item)}
         />
       )}
     />

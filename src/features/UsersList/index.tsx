@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -9,6 +9,7 @@ import Pagination from '../../components/Pagination';
 import { Dispatch, RootState } from '../../store';
 import {
   changePage,
+  removeUser,
   resetSorting,
   setSearchQuery,
   setSortingParameter,
@@ -23,14 +24,6 @@ const UsersList = () => {
   const { users, currentPage, searchQuery, sortingParameter } = useSelector(
     (state: RootState) => state.usersList,
   );
-
-  const handleSearch = (value: string) => {
-    dispatch(setSearchQuery(value));
-
-    if (currentPage !== 0) {
-      dispatch(changePage(0));
-    }
-  };
 
   const sortByAge = (data: User[], parameter: SortingParameters | null) => {
     if (parameter === null) {
@@ -57,10 +50,20 @@ const UsersList = () => {
   const sortingResults = sortByAge(searchResults, sortingParameter);
   const currentPageUsers = trimForPage(sortingResults, currentPage, USERS_PER_PAGE);
 
+  useLayoutEffect(() => {
+    const isNotEnoughUsersForCurrentPage = searchResults.length <= currentPage * USERS_PER_PAGE;
+
+    if (isNotEnoughUsersForCurrentPage) {
+      const previousPage = Math.max(currentPage - 1, 0);
+
+      dispatch(changePage(previousPage));
+    }
+  }, [searchResults.length, currentPage, dispatch]);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Search onChangeText={handleSearch} />
+        <Search onChangeText={text => dispatch(setSearchQuery(text))} />
         <Sorting
           label="Sorting by age"
           values={Object.values(SortingParameters)}
@@ -68,7 +71,11 @@ const UsersList = () => {
           onReset={() => dispatch(resetSorting())}
           style={styles.sorting}
         />
-        <List data={currentPageUsers} style={styles.list} />
+        <List
+          data={currentPageUsers}
+          style={styles.list}
+          onRemovePress={user => dispatch(removeUser(user.id))}
+        />
         <Pagination
           items={searchResults}
           step={USERS_PER_PAGE}

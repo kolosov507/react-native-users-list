@@ -44,9 +44,13 @@ export const usersListSlice = createSlice({
     resetSorting: state => {
       state.sortingParameter = null;
     },
+    removeUser: (state, action) => {
+      state.users = state.users.filter(({ id }) => id !== action.payload);
+    },
   },
 });
 
-export const { changePage, setSearchQuery, setSortingParameter, resetSorting } = usersListSlice.actions;
+export const { changePage, setSearchQuery, setSortingParameter, resetSorting, removeUser } =
+  usersListSlice.actions;
 
 export default usersListSlice.reducer;
