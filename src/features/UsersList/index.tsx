@@ -1,21 +1,24 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Search from '../../components/Search';
 import Sorting from '../../components/Sorting';
 import List from '../../components/List';
 import Pagination from '../../components/Pagination';
-import { RootState } from '../../store';
+import { Dispatch, RootState } from '../../store';
+import { changePage } from './usersListSlice';
 
-const Main = () => {
+const UsersList = () => {
   const ITEMS_PER_PAGE = 15;
 
-  const users = useSelector((state: RootState) => state.users);
-  const [pageIndex, setPageIndex] = useState(0);
+  const users = useSelector((state: RootState) => state.usersList.users);
+  const currentPage = useSelector((state: RootState) => state.usersList.currentPage);
 
-  const begin = pageIndex * ITEMS_PER_PAGE;
-  const end = (pageIndex + 1) * ITEMS_PER_PAGE;
+  const dispatch = useDispatch<Dispatch>();
+
+  const begin = currentPage * ITEMS_PER_PAGE;
+  const end = (currentPage + 1) * ITEMS_PER_PAGE;
 
   const listData = users.slice(begin, end);
 
@@ -33,8 +36,8 @@ const Main = () => {
         <Pagination
           items={users}
           step={ITEMS_PER_PAGE}
-          currentIndex={pageIndex}
-          onPress={setPageIndex}
+          currentIndex={currentPage}
+          onPress={index => dispatch(changePage(index))}
         />
       </View>
     </SafeAreaView>
@@ -58,4 +61,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Main;
+export default UsersList;

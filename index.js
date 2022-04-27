@@ -3,18 +3,18 @@ import { Navigation as RNN } from 'react-native-navigation';
 import { Provider } from 'react-redux';
 
 import ComponentNames from './src/navigation/componentNames';
-import Main from './src/screens/Main';
+import UsersList from './src/features/UsersList';
 import store from './src/store';
 
 RNN.registerComponent(
-  ComponentNames.Main,
+  ComponentNames.UsersList,
   () => props =>
     (
       <Provider store={store}>
-        <Main />
+        <UsersList />
       </Provider>
     ),
-  () => Main,
+  () => UsersList,
 );
 
 RNN.events().registerAppLaunchedListener(() => {
@@ -30,7 +30,7 @@ RNN.events().registerAppLaunchedListener(() => {
         children: [
           {
             component: {
-              name: ComponentNames.Main,
+              name: ComponentNames.UsersList,
             },
           },
         ],

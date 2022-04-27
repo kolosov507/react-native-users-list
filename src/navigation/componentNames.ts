@@ -1,5 +1,5 @@
 enum ComponentNames {
-  Main = 'Main',
+  UsersList = 'UsersList',
 }
 
 export default ComponentNames;
