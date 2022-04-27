@@ -1,14 +1,16 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import Search from '../../components/Search';
 import Sorting from '../../components/Sorting';
 import List from '../../components/List';
 import Pagination from '../../components/Pagination';
-
-import users from '../../store/users.json';
+import { RootState } from '../../store';
 
 const Main = () => {
+  const users = useSelector((state: RootState) => state.users);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
