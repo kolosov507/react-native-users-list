@@ -1,16 +1,16 @@
 import React from 'react';
 import { FlatList, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import Item from './Item';
+import Item from './UserCard';
 import { User } from '../../features/UsersList/usersListSlice';
 
 type Props = {
   data: User[];
-  onRemovePress: (user: User) => void;
+  onRemovePress: (id: User['id']) => void;
   style?: StyleProp<ViewStyle>;
 };
 
-const List: React.FC<Props> = props => {
+const UsersList: React.FC<Props> = props => {
   return (
     <FlatList
       style={props.style}
@@ -19,11 +19,12 @@ const List: React.FC<Props> = props => {
       ItemSeparatorComponent={Separator}
       renderItem={({ item }) => (
         <Item
+          id={item.id}
           key={item.id}
           age={item.age}
           avatar={item.avatar}
           name={item.name}
-          onRemovePress={() => props.onRemovePress(item)}
+          onRemovePress={props.onRemovePress}
         />
       )}
     />
@@ -38,4 +39,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default List;
+export default UsersList;

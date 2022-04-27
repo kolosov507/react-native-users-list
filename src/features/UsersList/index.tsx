@@ -1,10 +1,10 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useCallback, useLayoutEffect } from 'react';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Search from '../../components/Search';
 import Sorting from '../../components/Sorting';
-import List from '../../components/List';
+import List from '../../components/UsersList';
 import Pagination from '../../components/Pagination';
 import { Dispatch, RootState } from '../../store';
 import {
@@ -24,6 +24,13 @@ const UsersList = () => {
   const { users, currentPage, searchQuery, sortingParameter } = useSelector(
     (state: RootState) => state.usersList,
   );
+
+  const handleSearchQueryChanging = useCallback(
+    (text: string) => dispatch(setSearchQuery(text)),
+    [dispatch],
+  );
+
+  const handleRemovePress = useCallback((id: number) => dispatch(removeUser(id)), [dispatch]);
 
   const sortByAge = (data: User[], parameter: SortingParameters | null) => {
     if (parameter === null) {
@@ -63,19 +70,15 @@ const UsersList = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Search onChangeText={text => dispatch(setSearchQuery(text))} />
+        <Search value={searchQuery} onChangeText={handleSearchQueryChanging} />
         <Sorting
           label="Sorting by age"
           values={Object.values(SortingParameters)}
-          onChange={value => dispatch(setSortingParameter(value))}
+          onChange={parameter => dispatch(setSortingParameter(parameter))}
           onReset={() => dispatch(resetSorting())}
           style={styles.sorting}
         />
-        <List
-          data={currentPageUsers}
-          style={styles.list}
-          onRemovePress={user => dispatch(removeUser(user.id))}
-        />
+        <List data={currentPageUsers} style={styles.list} onRemovePress={handleRemovePress} />
         <Pagination
           items={searchResults}
           step={USERS_PER_PAGE}

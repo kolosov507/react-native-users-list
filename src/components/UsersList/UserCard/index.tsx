@@ -2,10 +2,11 @@ import React from 'react';
 import { Image, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 type Props = {
+  id: number;
   name: string;
   age: number;
   avatar: string;
-  onRemovePress: () => void;
+  onRemovePress: (id: number) => void;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -20,7 +21,7 @@ const UserCard: React.FC<Props> = props => {
           {props.age}
         </Text>
       </View>
-      <Text onPress={props.onRemovePress}>remove</Text>
+      <Text onPress={() => props.onRemovePress(props.id)}>remove</Text>
     </View>
   );
 };
@@ -51,4 +52,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserCard;
+export default React.memo(UserCard);
