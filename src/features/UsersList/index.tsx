@@ -83,7 +83,7 @@ const UsersList = () => {
         <Sorting
           label="Sorting by age"
           values={Object.values(SortingParameters)}
-          onChange={parameter => dispatch(setSortingParameter(parameter))}
+          onChange={parameter => dispatch(setSortingParameter(parameter as SortingParameters))}
           onReset={() => dispatch(resetSorting())}
           style={styles.sorting}
         />

@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import users from './users.json';
 
@@ -32,19 +32,19 @@ export const usersListSlice = createSlice({
   name: 'usersList',
   initialState,
   reducers: {
-    changePage: (state, action) => {
+    changePage: (state, action: PayloadAction<number>) => {
       state.currentPage = action.payload;
     },
-    setSearchQuery: (state, action) => {
+    setSearchQuery: (state, action: PayloadAction<string>) => {
       state.searchQuery = action.payload;
     },
-    setSortingParameter: (state, action) => {
+    setSortingParameter: (state, action: PayloadAction<SortingParameters>) => {
       state.sortingParameter = action.payload;
     },
     resetSorting: state => {
       state.sortingParameter = null;
     },
-    removeUser: (state, action) => {
+    removeUser: (state, action: PayloadAction<User['id']>) => {
       state.users = state.users.filter(({ id }) => id !== action.payload);
     },
   },
