@@ -1,9 +1,40 @@
-/**
- * @format
- */
+import React from 'react';
+import { Navigation as RNN } from 'react-native-navigation';
+import { Provider } from 'react-redux';
 
-import {AppRegistry} from 'react-native';
-import App from './App';
-import {name as appName} from './app.json';
+import ComponentNames from './src/navigation/componentNames';
+import UsersList from './src/features/UsersList';
+import store from './src/store';
 
-AppRegistry.registerComponent(appName, () => App);
+RNN.registerComponent(
+  ComponentNames.UsersList,
+  () => props =>
+    (
+      <Provider store={store}>
+        <UsersList />
+      </Provider>
+    ),
+  () => UsersList,
+);
+
+RNN.events().registerAppLaunchedListener(() => {
+  RNN.setDefaultOptions({
+    topBar: {
+      visible: false,
+    },
+  });
+
+  RNN.setRoot({
+    root: {
+      stack: {
+        children: [
+          {
+            component: {
+              name: ComponentNames.UsersList,
+            },
+          },
+        ],
+      },
+    },
+  });
+});
